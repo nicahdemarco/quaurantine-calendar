@@ -1,15 +1,17 @@
 <template>
-  <div v-if="this.more" @load="onCompChanged" class="main-container">
+  <div class="main-container">
+
+    <!-- cantidad total -->
+
     <div class="date-container">
-      <h4>Semana 1</h4>
       <div class="row-container">
         <button
-          v-for="(day, index) in days"
-          :key="index"
           ref="element"
+          :key="index"
+          v-for="(day, index) in days"
           type="button"
-          :class="btnClass"
           @click.once="onDayClicked(index)"
+          :class="btnClass"
         >
           {{ index + 1 }}
         </button>
@@ -28,7 +30,7 @@
 
 <script>
 export default {
-  name: "Calendar",
+  name: "MoreDays",
 
   data: function () {
     return {
@@ -40,19 +42,8 @@ export default {
   },
   methods: {
     onDayClicked: function (index) {
-      this.$refs.element[index].classList.add("marked-day");
-      this.restDay--;
-    },
-
-    onCompChanged: function () {
-      // eslint-disable-next-line no-debugger
-        return this.$emit("added-calendar", (this.more = false));
-    },
-  },
-  props: {
-    more: {
-      type: Boolean,
-      default: false,
+        this.$refs.element[index].classList.add("marked-day");
+        this.restDay--;
     },
   },
 };
@@ -81,7 +72,7 @@ export default {
   justify-content: center;
   flex-flow: row wrap;
   margin: 1%;
-  max-width: 24%;
+  max-width: 30%;
 }
 
 .day {
@@ -93,8 +84,8 @@ export default {
   background-color: #fffb00;
   border: 1px solid rgb(78, 78, 78);
   border-radius: 5px;
-  min-height: 60px;
-  min-width: 60px;
+  min-height: 80px;
+  min-width: 80px;
   display: flex;
   justify-content: center;
   align-items: center;
