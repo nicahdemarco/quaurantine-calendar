@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # quaurantine-calendar
 EN- Simple calendar to mark the remaining days to end the quarantine - Using flexbox-grid and the VueJS CLI service.
 To start the project and open a localhost just run
@@ -17,7 +16,7 @@ Run task
 
 # Calendario de cuarentena
 ES- Calendario simple para marcar los días restantes para finalizar la cuarentena - Se utilizo flexbox-grid y el CLI  service de VueJS.
-Para iniciar el proyecto y abrirun localhost solo corre
+Para iniciar el proyecto y abrir un localhost solo corre
 
 # yarn serve
 
@@ -34,25 +33,20 @@ Corre tareas
 # quarantine
 
 ## Project setup
-```
+
 yarn install
-```
 
 ### Compiles and hot-reloads for development
-```
+
 yarn serve
-```
 
 ### Compiles and minifies for production
-```
+
 yarn build
-```
 
 ### Lints and fixes files
-```
+
 yarn lint
-```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> master
