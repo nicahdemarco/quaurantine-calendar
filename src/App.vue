@@ -24,13 +24,11 @@
 
 <script>
 import Calendar from "./components/Calendar.vue";
-// import MoreDays from "./components/MoreDays.vue";
 
 export default {
   name: "App",
   components: {
     Calendar,
-    // MoreDays,
   },
 
   data: function () {
