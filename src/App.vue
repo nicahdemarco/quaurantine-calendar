@@ -3,15 +3,10 @@
     <h1>{{ title }}</h1>
     <!-- cantidad total -->
 
-    <!-- <div class="header">
-      Selecciona la fecha
-    </div> -->
+    <!-- Selecciona la fecha -->
+
     <div>
-      <Calendar 
-        :more="more"
-        title="semana 1"
-        @added-calendar='more=false'
-        />
+      <Calendar :more="more" title="semana 1" @added-calendar="more = false" />
       <button @click="isMoreDays">Add Days</button>
     </div>
     <!-- <more-days title="Calendario de cuarentena" /> -->
