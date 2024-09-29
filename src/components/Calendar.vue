@@ -1,28 +1,17 @@
 <template>
   <div v-if="this.more" @load="onCompChanged" class="main-container">
     <div class="date-container">
-      <h4>Semana 1</h4>
       <div class="row-container">
-        <button
-          v-for="(day, index) in days"
-          :key="index"
-          ref="element"
-          type="button"
-          :class="btnClass"
-          @click.once="onDayClicked(index)"
-        >
-          {{ index + 1 }}
+        <button v-for="(day, index) in createCalendar(15)" :key="index" ref="element" type="button" :class="btnClass"
+          :disabled="index !== nextDay" @click="() => onDayClicked(day, index)">
+          {{ day.num + 1 }}
         </button>
       </div>
     </div>
-    <div class="footer" v-if="restDay !== 0">
-      {{ ` Restan ${restDay} para completar la cuarentena` }}
+    <div class="footer" v-if="fortnightCount !== 0">
+      {{ ` Restan ${fortnightCount} para completar la cuarentena` }}
     </div>
     <div class="footer" v-else>{{ goodbye }}</div>
-
-    <span class="footer">
-      <img src="../assets/logo.png" class="img-logo" /> #quedateencasa</span
-    >
   </div>
 </template>
 
@@ -32,21 +21,41 @@ export default {
 
   data: function () {
     return {
-      restDay: 15,
+      fortnightCount: 15,
       goodbye: "Bien!!! valio la pena",
       btnClass: "day",
-      days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      nextDay: 0
     };
   },
   methods: {
-    onDayClicked: function (index) {
-      this.$refs.element[index].classList.add("marked-day");
-      this.restDay--;
+    onDayClicked: function (day, currentIndex) {
+      if (!day.marked) {
+        day.marked = true
+        this.$refs.element[currentIndex].classList.add("marked-day");
+        this.fortnightCount--;
+        this.nextDay++
+      }
     },
 
-    onCompChanged: function () {
+    createCalendar(qty) {
+      let calendarBtn = [{
+        num: 0,
+        marked: false
+      }];
+
+      for (let i = 1; i <= qty - 1; i++) {
+        calendarBtn.push({
+          num: i,
+          marked: false
+        });
+      }
+
+      return calendarBtn;
+    },
+
+    onCompChanged: () => {
       // eslint-disable-next-line no-debugger
-        return this.$emit("added-calendar", (this.more = false));
+      return this.$emit("added-calendar", (this.more = false));
     },
   },
   props: {
@@ -70,12 +79,14 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .date-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
+
 .row-container {
   display: flex;
   justify-content: center;
@@ -87,9 +98,12 @@ export default {
 .day {
   cursor: pointer;
   font-size: 32px;
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: rgb(134, 134, 134);
   -webkit-text-stroke: 0.4px;
+  animation: fill 0.6s infinite alternate;
   -webkit-animation: fill 0.6s infinite alternate;
+  -moz-animation: fill 0.6s infinite alternate;
+  -o-animation: fill 0.6s infinite alternate;
   background-color: #fffb00;
   border: 1px solid rgb(78, 78, 78);
   border-radius: 5px;
@@ -101,6 +115,7 @@ export default {
   margin: 10px;
   box-shadow: 15px 15px 64px 0 rgba(0, 0, 0, 0.3);
 }
+
 .day:hover {
   box-shadow: 15px 15px 64px 0 rgba(0, 0, 0, 0.5);
 }
@@ -110,6 +125,7 @@ export default {
   transform: scale(0.98);
   box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
 }
+
 .marked-day {
   background-color: #bd7d7d !important;
   border: 1px solid rgb(78, 78, 78);
@@ -117,25 +133,46 @@ export default {
   transform: scale(0.98);
   transition: color 0s 9999999s;
   box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+
+}
+
+@keyframes fill {
+  from {
+    -webkit-text-fill-color: rgba(34, 193, 195, 1);
+  }
+
+  to {
+    -webkit-text-fill-color: rgba(253, 187, 45, 1);
+  }
 }
 
 @-webkit-keyframes fill {
   from {
     -webkit-text-fill-color: rgba(34, 193, 195, 1);
   }
+
   to {
     -webkit-text-fill-color: rgba(253, 187, 45, 1);
   }
 }
-.footer {
-  font-size: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1%;
+
+@-moz-keyframes fill {
+  from {
+    -webkit-text-fill-color: rgba(34, 193, 195, 1);
+  }
+
+  to {
+    -webkit-text-fill-color: rgba(253, 187, 45, 1);
+  }
 }
-.img-logo {
-  height: 30px;
-  margin-right: 5px;
+
+@-o-keyframes fill {
+  from {
+    -webkit-text-fill-color: rgba(34, 193, 195, 1);
+  }
+
+  to {
+    -webkit-text-fill-color: rgba(253, 187, 45, 1);
+  }
 }
 </style>
