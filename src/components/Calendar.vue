@@ -1,28 +1,24 @@
 <template>
-  <div v-if="this.more" @load="onCompChanged" class="main-container">
+  <div class="main-container">
+    <h3>{{ `Semana ${weekNumber}` }}</h3>
     <div class="date-container">
-      <h4>Semana 1</h4>
       <div class="row-container">
-        <button
-          v-for="(day, index) in days"
-          :key="index"
-          ref="element"
-          type="button"
-          :class="btnClass"
-          @click.once="onDayClicked(index)"
+        <button 
+          v-for="(day, index) in calendarDays" 
+          :key="index" 
+          type="button" 
+          :class="[btnClass, { 'marked-day': day.marked }]"
+          :disabled="index !== nextDay" 
+          @click="() => onDayClicked(day)"
         >
-          {{ index + 1 }}
+          {{ day.num + 1 }}
         </button>
       </div>
     </div>
-    <div class="footer" v-if="restDay !== 0">
-      {{ ` Restan ${restDay} para completar la cuarentena` }}
+    <div class="footer" v-if="fortnightCount !== 0">
+      {{ `Restan ${fortnightCount} días para completar la cuarentena` }}
     </div>
     <div class="footer" v-else>{{ goodbye }}</div>
-
-    <span class="footer">
-      <img src="../assets/logo.png" class="img-logo" /> #quedateencasa</span
-    >
   </div>
 </template>
 
@@ -32,29 +28,54 @@ export default {
 
   data: function () {
     return {
-      restDay: 15,
-      goodbye: "Bien!!! valio la pena",
+      fortnightCount: 15,
+      goodbye: "¡Bien! Valió la pena",
       btnClass: "day",
-      days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      nextDay: 0,
+      calendarDays: this.createCalendar(15)
     };
   },
+
   methods: {
-    onDayClicked: function (index) {
-      this.$refs.element[index].classList.add("marked-day");
-      this.restDay--;
+    onDayClicked: function (day) {
+      if (!day.marked) {
+        day.marked = true;
+        this.fortnightCount--;
+        this.nextDay++;
+        
+        if (this.fortnightCount === 0) {
+          this.$emit("added-calendar");
+        }
+      }
     },
 
-    onCompChanged: function () {
-      // eslint-disable-next-line no-debugger
-        return this.$emit("added-calendar", (this.more = false));
-    },
+    createCalendar(qty) {
+      let calendarBtn = [{
+        num: 0,
+        marked: false
+      }];
+
+      for (let i = 1; i <= qty - 1; i++) {
+        calendarBtn.push({
+          num: i,
+          marked: false
+        });
+      }
+
+      return calendarBtn;
+    }
   },
+
   props: {
-    more: {
+    isExpanded: {
       type: Boolean,
       default: false,
     },
-  },
+    weekNumber: {
+      type: Number,
+      required: true
+    }
+  }
 };
 </script>
 
@@ -63,79 +84,70 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  align-items: center;
+  padding: 20px;
 }
 
-.header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+h3 {
+  color: #ffffff;
+  margin-bottom: 20px;
 }
+
 .date-container {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
+
 .row-container {
-  display: flex;
-  justify-content: center;
-  flex-flow: row wrap;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
   margin: 1%;
-  max-width: 24%;
+  max-width: 500px;
+  width: 100%;
 }
 
 .day {
   cursor: pointer;
-  font-size: 32px;
-  -webkit-text-fill-color: white;
-  -webkit-text-stroke: 0.4px;
-  -webkit-animation: fill 0.6s infinite alternate;
-  background-color: #fffb00;
-  border: 1px solid rgb(78, 78, 78);
-  border-radius: 5px;
-  min-height: 60px;
-  min-width: 60px;
+  font-size: 24px;  	
+  color: #2c3e50;
+  background-color: #ffffff;
+  border: 2px solid #007BFF;
+  border-radius: 8px;
+  aspect-ratio: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px;
-  box-shadow: 15px 15px 64px 0 rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .day:hover {
-  box-shadow: 15px 15px 64px 0 rgba(0, 0, 0, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .day:active {
-  background-color: #bb6d6d !important;
-  transform: scale(0.98);
-  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
-}
-.marked-day {
-  background-color: #bd7d7d !important;
-  border: 1px solid rgb(78, 78, 78);
-  animation: none;
-  transform: scale(0.98);
-  transition: color 0s 9999999s;
-  box-shadow: 3px 2px 22px 1px rgba(0, 0, 0, 0.24);
+  transform: scale(0.95);
 }
 
-@-webkit-keyframes fill {
-  from {
-    -webkit-text-fill-color: rgba(34, 193, 195, 1);
-  }
-  to {
-    -webkit-text-fill-color: rgba(253, 187, 45, 1);
-  }
+.day:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
+
+.marked-day {
+  background-color: #007BFF !important;
+  color: #ffffff !important;
+  border-color: #0056b3;
+  transform: scale(0.95);
+}
+
 .footer {
-  font-size: 32px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1%;
-}
-.img-logo {
-  height: 30px;
-  margin-right: 5px;
+  margin-top: 20px;
+  color: #ffffff;
+  font-size: 18px;
 }
 </style>
